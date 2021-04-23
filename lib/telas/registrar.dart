@@ -60,12 +60,11 @@ class _RegistrarState extends State<Registrar> {
                 height: 1,
               ),
               TextFormField(
-                key: ValueKey('email'),
-                keyboardType: TextInputType.emailAddress,
+                key: ValueKey('confirm_password'),
                 enableSuggestions: false,
-                initialValue: _formValues['email'],
+                initialValue: _formValues['password'],
                 decoration: InputDecoration(
-                    labelText: 'Email', border: OutlineInputBorder()),
+                    labelText: 'Repita a senha', border: OutlineInputBorder()),
                 validator: (value) {
                   if (value == null || !_isValidEmail(value))
                     return 'O email precisa ser válido!';
