@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lista_compras/telas/login.dart';
+import 'package:flutter_lista_compras/telas/registrar.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,26 +16,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
       ),
       home: Menu(),
-    );
-  }
-}
-
-class Menu extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Lista de Compras'),
-      ),
-      body: SingleChildScrollView(
-        child: Form(
-          child: Column(
-            children: [
-              ElevatedButton(onPressed: () {}, child: Text('Entrar na conta')),
-            ],
-          ),
-        ),
-      ),
+      routes: {
+        Registrar.routeName: (ctx) => Registrar(),
+      },
     );
   }
 }
