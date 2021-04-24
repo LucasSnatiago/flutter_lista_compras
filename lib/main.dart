@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lista_compras/telas/login.dart';
-import 'package:flutter_lista_compras/telas/registrar.dart';
+import 'package:flutter_lista_compras/login/login.dart';
+import 'package:flutter_lista_compras/login/registrar.dart';
+import 'package:flutter_lista_compras/telas/app.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       home: Menu(),
       routes: {
         Registrar.routeName: (ctx) => Registrar(),
+        MenuApp.routeName: (ctx) => MenuApp(),
       },
     );
   }

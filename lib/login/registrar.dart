@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
+import 'utils.dart';
 
 class Registrar extends StatefulWidget {
   static const routeName = 'Registrar';
@@ -9,7 +11,7 @@ class Registrar extends StatefulWidget {
 
 class _RegistrarState extends State<Registrar> {
   final _globalKey = GlobalKey<FormState>();
-  var _formValues = {};
+  Map<String, dynamic> _formValues = {};
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class _RegistrarState extends State<Registrar> {
                 decoration: InputDecoration(
                     labelText: 'Email', border: OutlineInputBorder()),
                 validator: (value) {
-                  if (value == null || !_isValidEmail(value))
+                  if (value == null || !isValidEmail(value))
                     return 'O email precisa ser válido!';
                   return null;
                 },
@@ -62,18 +64,21 @@ class _RegistrarState extends State<Registrar> {
               TextFormField(
                 key: ValueKey('confirm_password'),
                 enableSuggestions: false,
-                initialValue: _formValues['password'],
+                initialValue: _formValues['confirm_password'],
+                obscureText: true,
                 decoration: InputDecoration(
                     labelText: 'Repita a senha', border: OutlineInputBorder()),
                 validator: (value) {
-                  if (value == null || !_isValidEmail(value))
-                    return 'O email precisa ser válido!';
+                  if (value == null || _formValues['password'] != value)
+                    return 'As duas senhas precisam coincidir!';
                   return null;
                 },
                 onSaved: (value) {
-                  _formValues['email'] = value;
+                  _formValues['confirm_password'] = value;
                 },
               ),
+              ElevatedButton(
+                  onPressed: _registrar, child: Text('Registrar-se')),
             ],
           ),
         )),
@@ -105,14 +110,30 @@ class _RegistrarState extends State<Registrar> {
     );
   }
 
-  /// Regex simples de validação de email
-  bool _isValidEmail(String email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
-  }
+  _registrar() {
+    if (_globalKey.currentState?.validate() ?? false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Há erro em algum dos campos!')));
 
-  bool _registrar() {
-    return true;
+      return;
+    }
+
+    _globalKey.currentState?.save();
+    // Verificar a senhas
+    print(_formValues);
+
+    // Fazendo o hash da senha
+    //_formValues['password'] = hashedPassword(_formValues['password']);
+    // Inserindo no banco de dados
+    SQLDatabase.insert('users', _formValues).then((id) {
+      if (id < 0) {
+        var newLoggedUser = {
+          'user_id': id,
+        };
+
+        SQLDatabase.insert('ultimo_login', newLoggedUser);
+        Navigator.of(context).pushNamed('MenuApp');
+      }
+    });
   }
 }

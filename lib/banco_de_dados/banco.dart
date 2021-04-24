@@ -12,9 +12,9 @@ class SQLDatabase {
       await db.execute(
           'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, nome TEXT, email TEXT, senha TEXT)');
       await db.execute(
-          'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, FOREIGN KEY (user_id) REFERENCES users(id), dia_pagamento TEXT, titulo TEXT, descricao TEXT))');
+          'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, FOREIGN KEY (user_id) REFERENCES users(id), dia_pagamento TEXT, titulo TEXT, descricao TEXT, pago INTEGER))');
       await db.execute(
-          'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, FOREIGN KEY (user_id) REFERENCES users(id), ultimo_login TEXT)');
+          'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, FOREIGN KEY (user_id) REFERENCES users(id))');
     });
   }
 
@@ -24,21 +24,21 @@ class SQLDatabase {
   }
 
   /// Inserir no banco de dados
-  static Future<int> insert(int table, Map<String, dynamic> data) async {
+  static Future<int> insert(String table, Map<String, dynamic> data) async {
     final sqlDb = await SQLDatabase.database;
-    return sqlDb.insert(table.toString(), data,
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    return sqlDb.insert(table, data,
+        conflictAlgorithm: ConflictAlgorithm.abort);
   }
 
   /// Ler um dado do banco
-  static Future<List<Map<String, dynamic>>> read(int table) async {
+  static Future<List<Map<String, dynamic>>> read(String table) async {
     final sqlDb = await SQLDatabase.database;
-    return sqlDb.query(table.toString());
+    return sqlDb.query(table);
   }
 
   /// Deletar um elemento do banco
-  static Future<int> delete(int table, int id) async {
+  static Future<int> delete(String table, int id) async {
     final sqlDb = await SQLDatabase.database;
-    return sqlDb.delete(table.toString(), where: 'id=?', whereArgs: [id]);
+    return sqlDb.delete(table, where: 'id=?', whereArgs: [id]);
   }
 }
