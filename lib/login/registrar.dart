@@ -20,68 +20,73 @@ class _RegistrarState extends State<Registrar> {
         title: Text('Registre-se'),
       ),
       body: SingleChildScrollView(
-        key: _globalKey,
         child: Form(
+            key: _globalKey,
             child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: Column(
-            children: [
-              Text('Criar sua conta:'),
-              Text(''),
-              _buildTextFormField(
-                  'username',
-                  4,
-                  'Digite um nome com mais de 3 caracteres!',
-                  false,
-                  'Nome de usuário'),
-              SizedBox(
-                height: 1,
+              padding: const EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  Text('Criar sua conta:'),
+                  Text(''),
+                  _buildTextFormField(
+                      'username',
+                      4,
+                      'Digite um nome com mais de 3 caracteres!',
+                      false,
+                      'Nome de usuário'),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  TextFormField(
+                    key: ValueKey('email'),
+                    keyboardType: TextInputType.emailAddress,
+                    enableSuggestions: false,
+                    initialValue: _formValues['email'],
+                    decoration: InputDecoration(
+                        labelText: 'Email', border: OutlineInputBorder()),
+                    validator: (value) {
+                      if (value == null || !isValidEmail(value))
+                        return 'O email precisa ser válido!';
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _formValues['email'] = value;
+                    },
+                  ),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  _buildTextFormField(
+                      'password',
+                      8,
+                      'A senha precisa ter no mínimo 8 caracteres',
+                      true,
+                      'Senha'),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  TextFormField(
+                    key: ValueKey('confirm_password'),
+                    enableSuggestions: false,
+                    initialValue: _formValues['confirm_password'],
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        labelText: 'Repita a senha',
+                        border: OutlineInputBorder()),
+                    validator: (value) {
+                      if (value == null || _formValues['password'] != value)
+                        return 'As duas senhas precisam coincidir!';
+                      return null;
+                    },
+                    onSaved: (value) {
+                      _formValues['confirm_password'] = value;
+                    },
+                  ),
+                  ElevatedButton(
+                      onPressed: _registrar, child: Text('Registrar-se')),
+                ],
               ),
-              TextFormField(
-                key: ValueKey('email'),
-                keyboardType: TextInputType.emailAddress,
-                enableSuggestions: false,
-                initialValue: _formValues['email'],
-                decoration: InputDecoration(
-                    labelText: 'Email', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || !isValidEmail(value))
-                    return 'O email precisa ser válido!';
-                  return null;
-                },
-                onSaved: (value) {
-                  _formValues['email'] = value;
-                },
-              ),
-              SizedBox(
-                height: 1,
-              ),
-              _buildTextFormField('password', 8,
-                  'A senha precisa ter no mínimo 8 caracteres', true, 'Senha'),
-              SizedBox(
-                height: 1,
-              ),
-              TextFormField(
-                key: ValueKey('confirm_password'),
-                enableSuggestions: false,
-                initialValue: _formValues['confirm_password'],
-                obscureText: true,
-                decoration: InputDecoration(
-                    labelText: 'Repita a senha', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || _formValues['password'] != value)
-                    return 'As duas senhas precisam coincidir!';
-                  return null;
-                },
-                onSaved: (value) {
-                  _formValues['confirm_password'] = value;
-                },
-              ),
-              ElevatedButton(
-                  onPressed: _registrar, child: Text('Registrar-se')),
-            ],
-          ),
-        )),
+            )),
       ),
     );
   }
@@ -111,6 +116,8 @@ class _RegistrarState extends State<Registrar> {
   }
 
   _registrar() {
+    _globalKey.currentState?.save();
+
     if (_globalKey.currentState?.validate() ?? false) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Há erro em algum dos campos!')));
@@ -118,22 +125,25 @@ class _RegistrarState extends State<Registrar> {
       return;
     }
 
-    _globalKey.currentState?.save();
     // Verificar a senhas
     print(_formValues);
 
     // Fazendo o hash da senha
-    //_formValues['password'] = hashedPassword(_formValues['password']);
+    var hPassword = hashedPassword(_formValues['password']);
     // Inserindo no banco de dados
-    SQLDatabase.insert('users', _formValues).then((id) {
-      if (id < 0) {
-        var newLoggedUser = {
-          'user_id': id,
-        };
+    var insertUser = {
+      'nome': _formValues['username'],
+      'email': _formValues['email'],
+      'senha': hPassword
+    };
+    SQLDatabase.insert('users', insertUser).then((id) {
+      // Copiar os itens para o banco de dados
+      var userLogged = {
+        'user_id': id,
+      };
 
-        SQLDatabase.insert('ultimo_login', newLoggedUser);
-        Navigator.of(context).pushNamed('MenuApp');
-      }
+      SQLDatabase.insert('ultimo_login', userLogged);
+      Navigator.of(context).pushNamed('MenuApp');
     });
   }
 }

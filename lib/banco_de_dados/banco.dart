@@ -9,13 +9,19 @@ class SQLDatabase {
 
     return sql.openDatabase(path.join(dbPath, 'data.db'),
         onConfigure: _onConfigure, version: 1, onCreate: (db, version) async {
-      await db.execute(
-          'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, nome TEXT, email TEXT, senha TEXT)');
-      await db.execute(
-          'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, FOREIGN KEY (user_id) REFERENCES users(id), dia_pagamento TEXT, titulo TEXT, descricao TEXT, pago INTEGER))');
-      await db.execute(
-          'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, FOREIGN KEY (user_id) REFERENCES users(id))');
+      await db
+          .execute(
+              'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, nome TEXT, email TEXT, senha TEXT)')
+          .then((value) => _creatingDb(db));
     });
+  }
+
+  /// Ordenando a execução de operações assíncronas
+  static _creatingDb(db) async {
+    await db.execute(
+        'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, user_id INTEGER, dia_pagamento TEXT, titulo TEXT, descricao TEXT, pago INTEGER, FOREIGN KEY (user_id) REFERENCES users(id))');
+    await db.execute(
+        'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, user_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id))');
   }
 
   /// Ligando as chaves estrangeiras
