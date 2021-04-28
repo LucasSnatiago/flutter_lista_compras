@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
+import 'package:flutter_lista_compras/login/utils.dart';
 
 class Menu extends StatefulWidget {
   @override
@@ -6,7 +8,7 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
-  final _formKey = GlobalKey<FormState>();
+  final _globalKey = GlobalKey<FormState>();
 
   var _formValues = {};
 
@@ -17,60 +19,98 @@ class _MenuState extends State<Menu> {
         title: Text('Entre na sua conta'),
       ),
       body: SingleChildScrollView(
-        key: _formKey,
         child: Form(
+            key: _globalKey,
             child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Entre com sua conta: '),
-              Text(''),
-              TextFormField(
-                key: ValueKey('email'),
-                autocorrect: false,
-                initialValue: _formValues['email'],
-                validator: (value) {
-                  if (value == null || value.length < 4) {
-                    return 'Digite um email válido!';
-                  }
-                  return '';
-                },
-                onSaved: (value) => _formValues['email'] = value,
-                decoration: InputDecoration(
-                    labelText: 'Email', border: OutlineInputBorder()),
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Entre com sua conta: '),
+                  Text(''),
+                  TextFormField(
+                    key: ValueKey('email'),
+                    autocorrect: false,
+                    initialValue: _formValues['email'],
+                    validator: (value) {
+                      if (value == null || value.length < 4) {
+                        return 'Digite um email válido!';
+                      }
+                      return '';
+                    },
+                    onSaved: (value) => _formValues['email'] = value,
+                    decoration: InputDecoration(
+                        labelText: 'Email', border: OutlineInputBorder()),
+                  ),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  TextFormField(
+                    key: ValueKey('password'),
+                    autocorrect: false,
+                    initialValue: _formValues['password'],
+                    validator: (value) {
+                      if (value == null || value.length < 8) {
+                        return 'Você precisa digitar uma senha com pelo menos 8 caracteres!';
+                      }
+                      return '';
+                    },
+                    obscureText: true,
+                    onSaved: (value) => _formValues['password'] = value,
+                    decoration: InputDecoration(
+                        labelText: 'Senha', border: OutlineInputBorder()),
+                  ),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  ElevatedButton(onPressed: _login, child: Text('Login')),
+                  TextButton(
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed('Registrar'),
+                      child: Text('Registrar-se'))
+                ],
               ),
-              SizedBox(
-                height: 1,
-              ),
-              TextFormField(
-                key: ValueKey('password'),
-                autocorrect: false,
-                initialValue: _formValues['password'],
-                validator: (value) {
-                  if (value == null || value.length < 8) {
-                    return 'Você precisa digitar uma senha com pelo menos 8 caracteres!';
-                  }
-                  return '';
-                },
-                obscureText: true,
-                onSaved: (value) => _formValues['password'] = value,
-                decoration: InputDecoration(
-                    labelText: 'Senha', border: OutlineInputBorder()),
-              ),
-              SizedBox(
-                height: 1,
-              ),
-              ElevatedButton(onPressed: _login, child: Text('Login')),
-              TextButton(
-                  onPressed: () => Navigator.of(context).pushNamed('Registrar'),
-                  child: Text('Registrar-se'))
-            ],
-          ),
-        )),
+            )),
       ),
     );
   }
 
-  _login() {}
+  // Tentar localizar a chave de login do usuário no sistema e logar ele
+  _login() {
+    _globalKey.currentState?.save();
+
+    if (_globalKey.currentState?.validate() ?? false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Há erro em algum dos campos!')));
+
+      return;
+    }
+
+    print(_formValues);
+
+    return;
+
+    // Verificar se existe a pessoa no banco de dados
+    var usuarioEncontrado = false;
+    var usuarioID = -1;
+    SQLDatabase.read('users').then((rows) {
+      for (int i = 0; i < rows.length; i++) {
+        if (rows[i]['email'] == _formValues['email'] &&
+            checkPassword(_formValues['password'], rows[i]['password'])) {
+          usuarioEncontrado = true;
+          usuarioID = i;
+          i = rows.length;
+        }
+      }
+    });
+
+    var ultimLogin = {
+      'user_id': usuarioID,
+    };
+
+    if (usuarioEncontrado) {
+      SQLDatabase.insert('ultimo_login', ultimLogin)
+          .then((value) => Navigator.of(context).pushNamed('MenuApp'));
+    }
+  }
 }

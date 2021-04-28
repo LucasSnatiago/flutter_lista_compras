@@ -125,9 +125,6 @@ class _RegistrarState extends State<Registrar> {
       return;
     }
 
-    // Verificar a senhas
-    print(_formValues);
-
     // Fazendo o hash da senha
     var hPassword = hashedPassword(_formValues['password']);
     // Inserindo no banco de dados

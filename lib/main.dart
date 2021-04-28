@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lista_compras/login/login.dart';
+import 'package:flutter_lista_compras/loading.dart';
 import 'package:flutter_lista_compras/login/registrar.dart';
 import 'package:flutter_lista_compras/telas/app.dart';
 
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: Menu(),
+      home: Loading(),
       routes: {
         Registrar.routeName: (ctx) => Registrar(),
         MenuApp.routeName: (ctx) => MenuApp(),
