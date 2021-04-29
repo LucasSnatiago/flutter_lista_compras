@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
+import 'package:flutter_lista_compras/telas/NovoProduto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuApp extends StatefulWidget {
@@ -21,14 +22,15 @@ class _MenuAppState extends State<MenuApp> {
       ),
       body: SingleChildScrollView(
         child: Form(
-            child: Column(
-          children: [],
-        )),
+          child: Column(
+            children: [],
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pushNamed('NovoProduto'),
+        onPressed: () => Navigator.of(context).pushNamed(NovoProduto.routeName),
         backgroundColor: Colors.deepOrange,
-        child: const Icon(Icons.shopping_bag_sharp),
+        child: const Icon(Icons.shopping_cart),
       ),
     );
   }

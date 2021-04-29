@@ -33,6 +33,7 @@ class _MenuState extends State<Menu> {
                   Text(''),
                   TextFormField(
                     key: ValueKey('email'),
+                    keyboardType: TextInputType.emailAddress,
                     autocorrect: false,
                     initialValue: _formValues['email'],
                     validator: (value) {
