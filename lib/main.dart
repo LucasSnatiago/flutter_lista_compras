@@ -3,11 +3,12 @@ import 'package:flutter_lista_compras/loading.dart';
 import 'package:flutter_lista_compras/login/login.dart';
 import 'package:flutter_lista_compras/login/registrar.dart';
 import 'package:flutter_lista_compras/telas/MenuApp.dart';
+import 'package:flutter_lista_compras/telas/NovoProduto.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +21,10 @@ class MyApp extends StatelessWidget {
         Registrar.routeName: (ctx) => Registrar(),
         Menu.routeName: (ctx) => Menu(),
         MenuApp.routeName: (ctx) => MenuApp(),
+        NovoProduto.routeName: (ctx) => NovoProduto(),
       },
+      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+      supportedLocales: [const Locale('pt')],
     );
   }
 }

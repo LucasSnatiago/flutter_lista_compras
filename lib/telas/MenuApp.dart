@@ -19,6 +19,17 @@ class _MenuAppState extends State<MenuApp> {
       appBar: AppBar(
         title: Text('Lista de compras'),
       ),
+      body: SingleChildScrollView(
+        child: Form(
+            child: Column(
+          children: [],
+        )),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pushNamed('NovoProduto'),
+        backgroundColor: Colors.deepOrange,
+        child: const Icon(Icons.shopping_bag_sharp),
+      ),
     );
   }
 
