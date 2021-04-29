@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
 import 'package:flutter_lista_compras/login/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Menu extends StatefulWidget {
+  static const routeName = 'Menu';
+
   @override
   _MenuState createState() => _MenuState();
 }
@@ -86,10 +89,6 @@ class _MenuState extends State<Menu> {
       return;
     }
 
-    print(_formValues);
-
-    return;
-
     // Verificar se existe a pessoa no banco de dados
     var usuarioEncontrado = false;
     var usuarioID = -1;
@@ -109,8 +108,14 @@ class _MenuState extends State<Menu> {
     };
 
     if (usuarioEncontrado) {
+      saveUserID(usuarioID);
       SQLDatabase.insert('ultimo_login', ultimLogin)
           .then((value) => Navigator.of(context).pushNamed('MenuApp'));
     }
+  }
+
+  saveUserID(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('user_id', id);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'utils.dart';
 
 class Registrar extends StatefulWidget {
@@ -140,7 +141,13 @@ class _RegistrarState extends State<Registrar> {
       };
 
       SQLDatabase.insert('ultimo_login', userLogged);
+      saveUserID(id);
       Navigator.of(context).pushNamed('MenuApp');
     });
+  }
+
+  saveUserID(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('user_id', id);
   }
 }

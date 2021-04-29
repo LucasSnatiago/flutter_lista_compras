@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_lista_compras/telas/app.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'banco_de_dados/banco.dart';
 import 'login/login.dart';
 
@@ -20,8 +20,11 @@ class Loading extends StatelessWidget {
     try {
       SQLDatabase.read('ultimo_login').then((rows) {
         print(rows);
-        if (rows[rows.length - 1]['user_id'] != -1)
+        var userId = rows[rows.length - 1]['user_id'];
+        if (userId != -1) {
           Navigator.pushReplacementNamed(context, 'MenuApp');
+          saveUserID(userId);
+        }
 
         // Se o banco já existir e tiver um usuario nele logue esse usuário
         print('Nenhum user logado');
@@ -33,5 +36,10 @@ class Loading extends StatelessWidget {
     }
 
     return Menu();
+  }
+
+  saveUserID(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('user_id', id);
   }
 }
