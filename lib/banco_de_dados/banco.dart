@@ -21,7 +21,7 @@ class SQLDatabase {
     await db.execute(
         'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, user_id INTEGER, dia_pagamento TEXT, titulo TEXT, descricao TEXT, pago INTEGER, FOREIGN KEY (user_id) REFERENCES users(id))');
     await db.execute(
-        'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, user_id INTEGER, FOREIGN KEY (user_id) REFERENCES users(id))');
+        'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, user_id INTEGER, esta_logado TEXT, FOREIGN KEY (user_id) REFERENCES users(id))');
   }
 
   /// Ligando as chaves estrangeiras
@@ -40,6 +40,12 @@ class SQLDatabase {
   static Future<List<Map<String, dynamic>>> read(String table) async {
     final sqlDb = await SQLDatabase.database;
     return sqlDb.query(table);
+  }
+
+  /// Atualizar dados do banco de dados
+  static Future<int> update(String table, Map<String, dynamic> data) async {
+    final sqlDb = await SQLDatabase.database;
+    return sqlDb.update(table, data);
   }
 
   /// Deletar um elemento do banco

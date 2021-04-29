@@ -28,9 +28,9 @@ class _MenuAppState extends State<MenuApp> {
     final prefs = await SharedPreferences.getInstance();
     final rows = await SQLDatabase.read('users');
 
-    int id = prefs.getInt('user_id') ?? -1;
-    if (id < 0) return {};
-    userData = rows[id - 1];
+    int id = prefs.getInt('user_id') ?? 0;
+    for (int i = 0; i < rows.length; i++)
+      if (rows[i]['id'] == id) userData = rows[i];
     print('Data: ' + userData.toString());
     return userData;
   }
@@ -57,13 +57,16 @@ class _MenuAppState extends State<MenuApp> {
                       ListTile(
                         leading: Icon(Icons.logout),
                         title: Text('Sair'),
-                        onTap: () {
-                          SQLDatabase.insert('ultimo_login', {'user_id': -1});
-                          Navigator.pushReplacementNamed(context, 'Menu');
-                        },
+                        onTap: () => _deslogar(),
                       ),
                     ],
                   ));
+  }
+
+  /// Deslogar um usuário
+  _deslogar() async {
+    await SQLDatabase.insert('ultimo_login', {'esta_logado': 'true'});
+    Navigator.pushReplacementNamed(context, 'Menu');
   }
 
   /// Pegar as iniciais de um nome

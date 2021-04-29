@@ -91,27 +91,32 @@ class _MenuState extends State<Menu> {
 
     // Verificar se existe a pessoa no banco de dados
     var usuarioEncontrado = false;
-    var usuarioID = -1;
+    var usuarioID = 0;
     SQLDatabase.read('users').then((rows) {
       for (int i = 0; i < rows.length; i++) {
         if (rows[i]['email'] == _formValues['email'] &&
-            checkPassword(_formValues['password'], rows[i]['password'])) {
+            checkPassword(_formValues['password'], rows[i]['senha'])) {
           usuarioEncontrado = true;
-          usuarioID = i;
+          usuarioID = rows[i]['id'];
           i = rows.length;
         }
       }
+
+      print(rows);
+
+      // Logando usuário encontrado
+      var ultimLogin = {'user_id': usuarioID, 'esta_logado': 'true'};
+
+      if (usuarioEncontrado) {
+        saveUserID(usuarioID);
+        SQLDatabase.update('ultimo_login', ultimLogin)
+            .then((value) => Navigator.of(context).pushNamed('MenuApp'));
+      } else {
+        // Usuário não foi encontrado no banco
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Usuário não encontrado!')));
+      }
     });
-
-    var ultimLogin = {
-      'user_id': usuarioID,
-    };
-
-    if (usuarioEncontrado) {
-      saveUserID(usuarioID);
-      SQLDatabase.insert('ultimo_login', ultimLogin)
-          .then((value) => Navigator.of(context).pushNamed('MenuApp'));
-    }
   }
 
   saveUserID(int id) async {
