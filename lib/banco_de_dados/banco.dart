@@ -42,6 +42,13 @@ class SQLDatabase {
     return sqlDb.query(table);
   }
 
+  /// Ler dados de um usuário do banco
+  static Future<List<Map<String, dynamic>>> readById(
+      String table, int id) async {
+    final sqlDb = await SQLDatabase.database;
+    return sqlDb.query(table, where: 'user_id=?', whereArgs: [id]);
+  }
+
   /// Atualizar dados do banco de dados
   static Future<int> update(String table, Map<String, dynamic> data) async {
     final sqlDb = await SQLDatabase.database;

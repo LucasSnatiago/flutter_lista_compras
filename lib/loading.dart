@@ -41,8 +41,10 @@ class _LoadingState extends State<Loading> {
         // Testando os valores do banco
         if (user['esta_logado'] == 'true') {
           print('Usuário encontrado, logando usuário!');
-          Future.delayed(Duration.zero,
-              () => Navigator.pushReplacementNamed(context, 'MenuApp'));
+          Future.delayed(
+              Duration.zero,
+              () => Navigator.pushReplacementNamed(context, 'MenuApp',
+                  arguments: userID));
         } else {
           // Banco existe, mas o usuário não
           print('Usuário não encontrado, banco existe!');

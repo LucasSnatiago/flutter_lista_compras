@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
 import 'package:flutter_lista_compras/telas/NovoProduto.dart';
+import 'package:flutter_lista_compras/telas/exibirProduto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuApp extends StatefulWidget {
@@ -13,6 +14,8 @@ class MenuApp extends StatefulWidget {
 class _MenuAppState extends State<MenuApp> {
   @override
   Widget build(BuildContext context) {
+    final userID = ModalRoute.of(context)!.settings.arguments as int;
+
     return Scaffold(
       drawer: Drawer(
         child: buildListView(),
@@ -20,19 +23,31 @@ class _MenuAppState extends State<MenuApp> {
       appBar: AppBar(
         title: Text('Lista de compras'),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          child: Column(
-            children: [],
-          ),
-        ),
-      ),
+      body: FutureBuilder(
+          future: _retornarItensUserBD(userID),
+          builder: (context,
+                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) =>
+              snapshot.connectionState == ConnectionState.waiting
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, index) =>
+                          ListarContasUsuario(snapshot.data![index]['titulo']),
+                    )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(NovoProduto.routeName),
         backgroundColor: Colors.deepOrange,
         child: const Icon(Icons.shopping_cart),
       ),
     );
+  }
+
+  Future<List<Map<String, dynamic>>> _retornarItensUserBD(int id) async {
+    return await SQLDatabase.readById('conta', id);
   }
 
   Future<Map<String, dynamic>> retornarUserBD() async {
