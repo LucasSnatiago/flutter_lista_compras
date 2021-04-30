@@ -29,7 +29,7 @@ class _NovoProdutoState extends State<NovoProduto> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Defina seu produto',
@@ -40,36 +40,34 @@ class _NovoProdutoState extends State<NovoProduto> {
                 ),
                 TextFormField(
                   key: ValueKey('titulo'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'O produto precisa possuir um nome';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value!.trim().isEmpty
+                      ? 'O produto precisa possuir um nome'
+                      : null,
                   autocorrect: true,
                   onSaved: (newValue) => _formValues['titulo'] = newValue,
                   decoration: InputDecoration(
-                      labelText: 'Nome do produto',
-                      border: OutlineInputBorder()),
+                    labelText: 'Nome do produto',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 SizedBox(
-                  height: 2,
+                  height: 5,
                 ),
                 TextFormField(
                   key: ValueKey('preco'),
                   initialValue: _formValues['preco'],
                   onSaved: (newPrice) => _formValues['preco'] = newPrice,
                   keyboardType: TextInputType.number,
-                  validator: (value) =>
-                      (value == null || (double.parse(value) < 0.0))
-                          ? 'O valor não pode ser negativo'
-                          : null,
+                  validator: (value) => (value!.trim().isEmpty)
+                      ? 'O valor não pode ser negativo'
+                      : null,
                   decoration: InputDecoration(
-                      labelText: 'Valor do produto',
-                      border: OutlineInputBorder()),
+                    labelText: 'Valor do produto',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 SizedBox(
-                  height: 2,
+                  height: 10,
                 ),
                 TextFormField(
                   key: ValueKey('descricao'),
@@ -84,11 +82,11 @@ class _NovoProdutoState extends State<NovoProduto> {
                   decoration: InputDecoration(
                       alignLabelWithHint: true,
                       labelText: 'Descrição do produto',
-                      border: OutlineInputBorder()),
+                      border: OutlineInputBorder(),),
                   maxLines: 8,
                 ),
                 SizedBox(
-                  height: 4,
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -103,9 +101,10 @@ class _NovoProdutoState extends State<NovoProduto> {
                   height: 20,
                 ),
                 ElevatedButton.icon(
-                    onPressed: _addProdutos(context),
-                    icon: Icon(Icons.add_shopping_cart),
-                    label: Text('Adicionar produto'))
+                  onPressed:()=> _addProdutos(context),
+                  icon: Icon(Icons.add_shopping_cart),
+                  label: Text('Adicionar produto'),
+                ),
               ],
             ),
           ),
@@ -114,7 +113,7 @@ class _NovoProdutoState extends State<NovoProduto> {
     );
   }
 
-  _addProdutos(context) {
+  _addProdutos(BuildContext context) {
     if (_globalKey.currentState?.validate() ?? false) {
       _globalKey.currentState?.save();
       print('Valores da compra $_formValues');
