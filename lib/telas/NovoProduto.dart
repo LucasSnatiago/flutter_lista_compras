@@ -29,7 +29,7 @@ class _NovoProdutoState extends State<NovoProduto> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Defina seu produto',
@@ -40,20 +40,18 @@ class _NovoProdutoState extends State<NovoProduto> {
                 ),
                 TextFormField(
                   key: ValueKey('titulo'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'O produto precisa possuir um nome';
-                    }
-                    return null;
-                  },
+                  validator: (value) => value!.trim().isEmpty
+                      ? 'O produto precisa possuir um nome'
+                      : null,
                   autocorrect: true,
                   onSaved: (newValue) => _formValues['titulo'] = newValue,
                   decoration: InputDecoration(
-                      labelText: 'Nome do produto',
-                      border: OutlineInputBorder()),
+                    labelText: 'Nome do produto',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 SizedBox(
-                  height: 2,
+                  height: 20,
                 ),
                 TextFormField(
                   key: ValueKey('preco'),
@@ -61,34 +59,33 @@ class _NovoProdutoState extends State<NovoProduto> {
                   onSaved: (newPrice) => _formValues['preco'] = newPrice,
                   keyboardType: TextInputType.number,
                   validator: (value) =>
-                      (value == null || (double.parse(value) < 0.0))
+                      (value!.trim().isEmpty && (double.parse(value) >= 0.0))
                           ? 'O valor não pode ser negativo'
                           : null,
                   decoration: InputDecoration(
-                      labelText: 'Valor do produto',
-                      border: OutlineInputBorder()),
+                    labelText: 'Valor do produto',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 SizedBox(
-                  height: 2,
+                  height: 20,
                 ),
                 TextFormField(
                   key: ValueKey('descricao'),
                   autocorrect: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'O produto precisa possuir uma descrição';
-                    }
-                    return null;
-                  },
+                  validator: (value) => (value == null || value.isEmpty)
+                      ? 'O produto precisa possuir uma descrição'
+                      : null,
                   onSaved: (newValue) => _formValues['descricao'] = newValue,
                   decoration: InputDecoration(
-                      alignLabelWithHint: true,
-                      labelText: 'Descrição do produto',
-                      border: OutlineInputBorder()),
+                    alignLabelWithHint: true,
+                    labelText: 'Descrição do produto',
+                    border: OutlineInputBorder(),
+                  ),
                   maxLines: 8,
                 ),
                 SizedBox(
-                  height: 4,
+                  height: 25,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,12 +97,13 @@ class _NovoProdutoState extends State<NovoProduto> {
                   ],
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 ElevatedButton.icon(
-                    onPressed: _addProdutos(context),
-                    icon: Icon(Icons.add_shopping_cart),
-                    label: Text('Adicionar produto'))
+                  onPressed: () => _addProdutos(context),
+                  icon: Icon(Icons.add_shopping_cart),
+                  label: Text('Adicionar produto'),
+                ),
               ],
             ),
           ),
@@ -114,7 +112,7 @@ class _NovoProdutoState extends State<NovoProduto> {
     );
   }
 
-  _addProdutos(context) {
+  _addProdutos(BuildContext context) {
     if (_globalKey.currentState?.validate() ?? false) {
       _globalKey.currentState?.save();
       print('Valores da compra $_formValues');
