@@ -78,11 +78,10 @@ class _RegistrarState extends State<Registrar> {
                     labelText: 'Repita a senha',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) {
-                    if (value == null || _formValues['password'] != value)
-                      return 'As duas senhas precisam coincidir!';
-                    return null;
-                  },
+                  validator: (value) =>
+                      (value == null || _formValues['password'] != value)
+                          ? 'As duas senhas precisam coincidir!'
+                          : null,
                   onSaved: (value) {
                     _formValues['confirm_password'] = value;
                   },
@@ -91,7 +90,9 @@ class _RegistrarState extends State<Registrar> {
                   height: 30,
                 ),
                 ElevatedButton(
-                    onPressed: _registrar, child: Text('Registrar-se')),
+                  onPressed: _registrar,
+                  child: Text('Registrar-se'),
+                ),
               ],
             ),
           ),
@@ -117,7 +118,7 @@ class _RegistrarState extends State<Registrar> {
       obscureText: isPassword,
       onSaved: (value) => _formValues[valueKey] = value,
       decoration:
-          InputDecoration(labelText: labelText, border: OutlineInputBorder()),
+          InputDecoration(labelText: labelText, border: OutlineInputBorder(),),
     );
   }
 
@@ -126,7 +127,10 @@ class _RegistrarState extends State<Registrar> {
 
     if (_globalKey.currentState?.validate() ?? false) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Há erro em algum dos campos!')));
+        SnackBar(
+          content: Text('Há erro em algum dos campos!'),
+        ),
+      );
 
       return;
     }
