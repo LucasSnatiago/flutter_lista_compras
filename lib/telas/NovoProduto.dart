@@ -122,10 +122,9 @@ class _NovoProdutoState extends State<NovoProduto> {
         var produto = {
           'user_id': userId,
           'titulo': _formValues['titulo'],
-          'preco': _consertarValor(_formValues['preco']),
+          'preco': _formValues['preco'],
           'descricao': _formValues['descricao'],
           'dia_pagamento': selectedDate.toIso8601String(),
-          'pago': 'false',
         };
 
         SQLDatabase.insert('conta', produto);
@@ -134,10 +133,6 @@ class _NovoProdutoState extends State<NovoProduto> {
             .pushReplacementNamed(MenuApp.routeName, arguments: userId);
       });
     }
-  }
-
-  String _consertarValor(String valor) {
-    return 'R\$ ' + valor.replaceAll('.', ',');
   }
 
   Future<void> _selectDate(BuildContext context) async {

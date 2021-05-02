@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
 import 'package:flutter_lista_compras/telas/NovoProduto.dart';
 import 'package:flutter_lista_compras/telas/exibirProduto.dart';
+import 'package:money2/money2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuApp extends StatefulWidget {
@@ -110,6 +111,7 @@ class _MenuAppState extends State<MenuApp> {
 
 class ListarContasUsuario extends StatelessWidget {
   final Map<String, dynamic> produto;
+  final Currency brlCurrency = Currency.create('BRL', 2, symbol: '');
 
   ListarContasUsuario(this.produto);
 
@@ -120,10 +122,17 @@ class ListarContasUsuario extends StatelessWidget {
           .pushNamed(ExibirProduto.routeName, arguments: produto),
       child: ListTile(
         leading: CircleAvatar(
-          child: FittedBox(child: Text(produto['preco'])),
+          child: FittedBox(
+              child: Text(Money.fromInt(
+                      _parseDoubleToInt(produto['preco']), brlCurrency)
+                  .toString())),
         ),
         title: Text(produto['titulo']),
       ),
     );
+  }
+
+  int _parseDoubleToInt(double preco) {
+    return (preco * 100).toInt();
   }
 }
