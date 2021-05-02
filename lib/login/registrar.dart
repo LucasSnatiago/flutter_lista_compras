@@ -149,6 +149,7 @@ class _RegistrarState extends State<Registrar> {
       // Copiar os itens para o banco de dados
       var userLogged = {
         'user_id': id,
+        'esta_logado': 'true',
       };
 
       SQLDatabase.insert('ultimo_login', userLogged);
