@@ -25,19 +25,23 @@ class _MenuAppState extends State<MenuApp> {
       ),
       body: FutureBuilder(
           future: _retornarItensUserBD(userID),
-          builder: (context,
-                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) =>
-              snapshot.connectionState == ConnectionState.waiting
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: snapshot.data?.length ?? 0,
-                      itemBuilder: (context, index) =>
-                          ListarContasUsuario(snapshot.data![index]['titulo']),
-                    )),
+          builder:
+              (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+            print(snapshot.data.toString());
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            else {
+              return ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: snapshot.data?.length ?? 0,
+                itemBuilder: (context, index) =>
+                    ListarContasUsuario(snapshot.data![index]),
+              );
+            }
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pushNamed(NovoProduto.routeName),
         backgroundColor: Colors.deepOrange,
@@ -102,4 +106,24 @@ class _MenuAppState extends State<MenuApp> {
   String getInitials(String name) => name.isNotEmpty
       ? name.trim().split(' ').map((l) => l[0].toUpperCase()).take(2).join()
       : '';
+}
+
+class ListarContasUsuario extends StatelessWidget {
+  final Map<String, dynamic> produto;
+
+  ListarContasUsuario(this.produto);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context)
+          .pushNamed(ExibirProduto.routeName, arguments: produto),
+      child: ListTile(
+        leading: CircleAvatar(
+          child: FittedBox(child: Text(produto['preco'])),
+        ),
+        title: Text(produto['titulo']),
+      ),
+    );
+  }
 }

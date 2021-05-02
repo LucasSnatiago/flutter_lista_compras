@@ -110,8 +110,8 @@ class _MenuState extends State<Menu> {
 
       if (usuarioEncontrado) {
         saveUserID(usuarioID);
-        SQLDatabase.update('ultimo_login', ultimLogin)
-            .then((value) => Navigator.of(context).pushNamed('MenuApp'));
+        SQLDatabase.update('ultimo_login', ultimLogin).then((value) =>
+            Navigator.of(context).pushNamed('MenuApp', arguments: usuarioID));
       } else {
         // Usuário não foi encontrado no banco
         ScaffoldMessenger.of(context)

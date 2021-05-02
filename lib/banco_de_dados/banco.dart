@@ -19,7 +19,7 @@ class SQLDatabase {
   /// Ordenando a execução de operações assíncronas
   static _creatingDb(db) async {
     await db.execute(
-        'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, user_id INTEGER, dia_pagamento TEXT, titulo TEXT, descricao TEXT, pago INTEGER, FOREIGN KEY (user_id) REFERENCES users(id))');
+        'CREATE TABLE IF NOT EXISTS conta (id INTEGER PRIMARY KEY, user_id INTEGER, dia_pagamento TEXT, titulo TEXT, preco TEXT, descricao TEXT, pago INTEGER, FOREIGN KEY (user_id) REFERENCES users(id))');
     await db.execute(
         'CREATE TABLE IF NOT EXISTS ultimo_login (id INTEGER PRIMARY KEY, user_id INTEGER, esta_logado TEXT, FOREIGN KEY (user_id) REFERENCES users(id))');
   }

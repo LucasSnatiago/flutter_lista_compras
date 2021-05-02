@@ -117,15 +117,17 @@ class _RegistrarState extends State<Registrar> {
           : null,
       obscureText: isPassword,
       onSaved: (value) => _formValues[valueKey] = value,
-      decoration:
-          InputDecoration(labelText: labelText, border: OutlineInputBorder(),),
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: OutlineInputBorder(),
+      ),
     );
   }
 
   _registrar() {
     _globalKey.currentState?.save();
 
-    if (_globalKey.currentState?.validate() ?? false) {
+    if (!(_globalKey.currentState?.validate() ?? true)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Há erro em algum dos campos!'),
@@ -151,7 +153,7 @@ class _RegistrarState extends State<Registrar> {
 
       SQLDatabase.insert('ultimo_login', userLogged);
       saveUserID(id);
-      Navigator.of(context).pushNamed('MenuApp');
+      Navigator.of(context).pushNamed('MenuApp', arguments: id);
     });
   }
 

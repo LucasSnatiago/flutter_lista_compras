@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lista_compras/banco_de_dados/banco.dart';
+import 'package:flutter_lista_compras/telas/MenuApp.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -121,6 +122,7 @@ class _NovoProdutoState extends State<NovoProduto> {
         var produto = {
           'user_id': userId,
           'titulo': _formValues['titulo'],
+          'preco': _consertarValor(_formValues['preco']),
           'descricao': _formValues['descricao'],
           'dia_pagamento': selectedDate.toIso8601String(),
           'pago': 'false',
@@ -128,16 +130,21 @@ class _NovoProdutoState extends State<NovoProduto> {
 
         SQLDatabase.insert('conta', produto);
 
-        Navigator.of(context).pop();
+        Navigator.of(context)
+            .pushReplacementNamed(MenuApp.routeName, arguments: userId);
       });
     }
+  }
+
+  String _consertarValor(String valor) {
+    return 'R\$ ' + valor.replaceAll('.', ',');
   }
 
   Future<void> _selectDate(BuildContext context) async {
     final now = DateTime.now();
 
     final DateTime? picked = await showDatePicker(
-        locale: const Locale('pt', 'PT'),
+        locale: const Locale('pt', 'BR'),
         context: context,
         firstDate: now,
         lastDate: DateTime(now.year + 100),

@@ -4,6 +4,7 @@ import 'package:flutter_lista_compras/login/login.dart';
 import 'package:flutter_lista_compras/login/registrar.dart';
 import 'package:flutter_lista_compras/telas/MenuApp.dart';
 import 'package:flutter_lista_compras/telas/NovoProduto.dart';
+import 'package:flutter_lista_compras/telas/exibirProduto.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         Menu.routeName: (ctx) => Menu(),
         MenuApp.routeName: (ctx) => MenuApp(),
         NovoProduto.routeName: (ctx) => NovoProduto(),
+        ExibirProduto.routeName: (ctx) => ExibirProduto(),
       },
       localizationsDelegates: [GlobalMaterialLocalizations.delegate],
       supportedLocales: [const Locale('pt')],
